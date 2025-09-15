@@ -1,0 +1,134 @@
+{
+  "info": {
+    "name": "KairosHR API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Collection untuk testing semua endpoint KairosHR"
+  },
+  "item": [
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"test@company.com\",\n  \"password\": \"password\"\n}"
+        },
+        "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+      }
+    },
+    {
+      "name": "Get Profile",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{access_token}}" }
+        ],
+        "url": { "raw": "{{baseUrl}}/employees/profile", "host": ["{{baseUrl}}"], "path": ["employees", "profile"] }
+      }
+    },
+    {
+      "name": "Update Profile",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{access_token}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"phone\": \"08123456789\",\n  \"photoUrl\": \"https://example.com/photo.jpg\",\n  \"password\": \"newpassword\"\n}"
+        },
+        "url": { "raw": "{{baseUrl}}/employees/profile", "host": ["{{baseUrl}}"], "path": ["employees", "profile"] }
+      }
+    },
+    {
+      "name": "Clock-in",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{access_token}}" }
+        ],
+        "url": { "raw": "{{baseUrl}}/attendance/clock-in", "host": ["{{baseUrl}}"], "path": ["attendance", "clock-in"] }
+      }
+    },
+    {
+      "name": "Clock-out",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{access_token}}" }
+        ],
+        "url": { "raw": "{{baseUrl}}/attendance/clock-out", "host": ["{{baseUrl}}"], "path": ["attendance", "clock-out"] }
+      }
+    },
+    {
+      "name": "Attendance Summary",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{access_token}}" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/attendance/summary?start=2025-09-01&end=2025-09-30",
+          "host": ["{{baseUrl}}"],
+          "path": ["attendance", "summary"],
+          "query": [
+            { "key": "start", "value": "2025-09-01" },
+            { "key": "end", "value": "2025-09-30" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Admin - Add Employee",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"New User\",\n  \"email\": \"new@company.com\",\n  \"password\": \"password\",\n  \"position\": \"Staff\",\n  \"phone\": \"08123456780\"\n}"
+        },
+        "url": { "raw": "{{baseUrl}}/admin/employees", "host": ["{{baseUrl}}"], "path": ["admin", "employees"] }
+      }
+    },
+    {
+      "name": "Admin - Update Employee",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": 2,\n  \"data\": {\n    \"position\": \"Manager\"\n  }\n}"
+        },
+        "url": { "raw": "{{baseUrl}}/admin/employees/update", "host": ["{{baseUrl}}"], "path": ["admin", "employees", "update"] }
+      }
+    },
+    {
+      "name": "Admin - Attendance Monitoring",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/admin/attendance?employee=2&start=2025-09-01&end=2025-09-30",
+          "host": ["{{baseUrl}}"],
+          "path": ["admin", "attendance"],
+          "query": [
+            { "key": "employee", "value": "2" },
+            { "key": "start", "value": "2025-09-01" },
+            { "key": "end", "value": "2025-09-30" }
+          ]
+        }
+      }
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "access_token", "value": "" }
+  ]
+}

@@ -1,0 +1,21 @@
+const { PrismaClient } = require('../../generated/prisma');
+class LogService {
+  constructor() {
+    Object.defineProperty(this, 'prisma', {
+      value: new PrismaClient(),
+      writable: true,
+      enumerable: true,
+      configurable: true,
+    });
+  }
+  async createLog(employeeId, action, details) {
+    return this.prisma.log.create({
+      data: {
+        employeeId,
+        action,
+        details: JSON.stringify(details),
+      },
+    });
+  }
+}
+module.exports = { LogService };
