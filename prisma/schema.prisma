@@ -46,3 +46,12 @@ model Log {
   timestamp  DateTime @default(now())
   details    String
 }
+
+model Notification {
+  id         Int      @id @default(autoincrement())
+  title      String
+  message    String
+  targetId   Int      // id user yang menerima notifikasi (admin)
+  createdAt  DateTime @default(now())
+  read       Boolean  @default(false)
+}

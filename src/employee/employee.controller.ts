@@ -26,14 +26,15 @@ export class EmployeeController {
     if (!userId) return { error: 'Unauthorized' };
     const result = await this.employeeService.updateProfile(userId, body);
 
-    // Ambil deviceToken admin dari database
+    // Ambil deviceToken dan id admin dari database
     const adminUser = await this.employeeService.getAdminUser();
     const deviceToken = adminUser?.deviceToken;
-    if (deviceToken) {
+    if (deviceToken && adminUser?.id) {
       await this.notificationService.sendFirebaseNotification(
         'Profile Updated',
         `Employee ${result.name} updated profile`,
-        deviceToken
+        deviceToken,
+        adminUser.id // <-- targetId untuk simpan notifikasi
       );
     }
 

@@ -4,6 +4,9 @@ import { PrismaService } from './prisma.service';
 @Injectable()
 export class AdminService {
   constructor(private prisma: PrismaService) {}
+    async getAllEmployees() {
+      return this.prisma.employee.findMany();
+    }
 
   async addEmployee(data: { name: string; email: string; password: string; position: string; phone?: string; role?: string }) {
     const bcrypt = require('bcrypt');

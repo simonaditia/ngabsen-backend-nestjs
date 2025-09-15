@@ -3,9 +3,11 @@ import * as amqp from 'amqplib';
 import * as admin from 'firebase-admin';
 import { Kafka } from 'kafkajs';
 import { join } from 'path';
+import { PrismaClient } from '../../generated/prisma';
 
 @Injectable()
 export class NotificationService {
+  private prisma = new PrismaClient();
   constructor() {
     if (!admin.apps.length) {
       admin.initializeApp({
@@ -14,18 +16,35 @@ export class NotificationService {
     }
   }
 
-  async sendFirebaseNotification(title: string, body: string, deviceToken: string) {
+  async sendFirebaseNotification(title: string, body: string, deviceToken: string, targetId?: number) {
     try {
       await admin.messaging().send({
         notification: { title, body },
         token: deviceToken,
       });
+      // Simpan notifikasi ke database
+      if (targetId) {
+        await this.prisma.notification.create({
+          data: {
+            title,
+            message: body,
+            targetId,
+          },
+        });
+      }
       console.log(`[Firebase] Sent to: ${deviceToken}, Title: ${title}, Body: ${body}`);
       return true;
     } catch (error) {
       console.error('[Firebase] Error:', error);
       return false;
     }
+  }
+
+  async getNotifications(targetId: number) {
+    return this.prisma.notification.findMany({
+      where: { targetId },
+      orderBy: { createdAt: 'desc' },
+    });
   }
 
   // RabbitMQ logging
