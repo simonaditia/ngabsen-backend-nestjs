@@ -1,4 +1,5 @@
-import { Controller, Get, Patch, Body, Request, UseGuards, Post } from '@nestjs/common';
+import { Controller, Get, Patch, Body, Request, UseGuards, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from '@nestjs/passport';
 import { EmployeeService } from './employee.service';
 import { NotificationService } from '../notification/notification.service';
@@ -9,6 +10,19 @@ export class EmployeeController {
     private readonly employeeService: EmployeeService,
     private readonly notificationService: NotificationService,
   ) {}
+
+  @UseGuards(AuthGuard('jwt'))
+  @Patch('profile-photo')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadProfilePhoto(@UploadedFile() file: any, @Request() req) {
+  const userId = req.user?.userId;
+  if (!userId) return { error: 'Unauthorized' };
+  // Upload ke Cloudinary
+  const photoUrl = await this.notificationService.uploadPhotoToCloudinary(file, userId);
+  // Update photoUrl di database
+  await this.employeeService.updateProfile(userId, { photoUrl });
+  return { photoUrl };
+  }
 
   @UseGuards(AuthGuard('jwt'))
   @Get('profile')

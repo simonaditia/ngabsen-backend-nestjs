@@ -1,12 +1,31 @@
 import { Injectable } from '@nestjs/common';
 import * as amqp from 'amqplib';
 import * as admin from 'firebase-admin';
+import { v2 as cloudinary } from 'cloudinary';
 import { Kafka } from 'kafkajs';
 import { join } from 'path';
 import { PrismaClient } from '../../generated/prisma';
 
 @Injectable()
 export class NotificationService {
+  async uploadPhotoToCloudinary(file: any, userId: number): Promise<string> {
+    cloudinary.config({
+      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+      api_key: process.env.CLOUDINARY_API_KEY,
+      api_secret: process.env.CLOUDINARY_API_SECRET,
+    });
+    // Upload file buffer ke Cloudinary
+    return new Promise((resolve, reject) => {
+      cloudinary.uploader.upload_stream({
+        folder: 'profile-photos',
+        public_id: `${userId}-${Date.now()}`,
+        resource_type: 'image',
+      }, (error, result) => {
+        if (error) return reject(error);
+        resolve(result!.secure_url);
+      }).end(file.buffer);
+    });
+  }
   private prisma = new PrismaClient();
   constructor() {
     if (!admin.apps.length) {
