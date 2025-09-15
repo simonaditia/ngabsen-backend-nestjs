@@ -33,10 +33,12 @@ Kairos HR adalah sistem absensi karyawan WFH dengan monitoring real-time oleh ad
 - **RabbitMQ** (logging & audit trail)
 - **Firebase Cloud Messaging (FCM)** (real-time notification)
 - **JWT & Passport.js** (autentikasi & otorisasi)
+- **Cloudinary** (file storage - upload photo)
 
 ## Fitur Utama
 - Autentikasi karyawan & admin (JWT)
 - CRUD profil karyawan
+- Upload Photo to Cloud
 - Absensi clock-in/clock-out
 - Monitoring absensi oleh admin
 - Real-time notifikasi ke admin
