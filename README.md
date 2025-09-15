@@ -21,6 +21,106 @@
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
+# Kairos HR - Employee WFH Attendance System
+
+## Project Overview
+Kairos HR adalah sistem absensi karyawan WFH dengan monitoring real-time oleh admin HRD. Backend dibangun dengan arsitektur microservices menggunakan NestJS dan PostgreSQL, serta integrasi RabbitMQ dan Firebase Cloud Messaging (FCM).
+
+## Teknologi yang Digunakan
+- **NestJS** (RESTful API, microservices)
+- **PostgreSQL** (database utama)
+- **Prisma ORM** (data modeling & query)
+- **RabbitMQ** (logging & audit trail)
+- **Firebase Cloud Messaging (FCM)** (real-time notification)
+- **JWT & Passport.js** (autentikasi & otorisasi)
+
+## Fitur Utama
+- Autentikasi karyawan & admin (JWT)
+- CRUD profil karyawan
+- Absensi clock-in/clock-out
+- Monitoring absensi oleh admin
+- Real-time notifikasi ke admin
+- Audit log perubahan data
+
+## Struktur Database
+- **Employee**: id, name, email, passwordHash, photoUrl, position, phone, deviceToken, role, createdAt, updatedAt
+- **Attendance**: id, employeeId, date, clockIn, clockOut, status
+- **Log**: id, employeeId, action, timestamp, details
+- **Notification**: id, title, message, targetId, createdAt, read
+
+## Contoh Payload API
+### 1. Login
+`POST /auth/login`
+```json
+{
+  "email": "user@company.com",
+  "password": "yourpassword"
+}
+```
+
+### 2. Get Profile
+`GET /employees/profile`
+Header: `Authorization: Bearer <token>`
+
+### 3. Update Profile
+`PATCH /employees/profile`
+```json
+{
+  "photoUrl": "https://...",
+  "phone": "08123456789"
+}
+```
+
+### 4. Save Device Token
+`POST /employees/device-token`
+```json
+{
+  "deviceToken": "<FCM_DEVICE_TOKEN>"
+}
+```
+
+### 5. Clock-in
+`POST /attendance/clock-in`
+```json
+{
+  "date": "2025-09-15",
+  "status": "present"
+}
+```
+
+### 6. Attendance Summary
+`GET /attendance/summary?start=2025-09-01&end=2025-09-15`
+
+### 7. Admin - Add Employee
+`POST /admin/employees`
+```json
+{
+  "name": "Budi",
+  "email": "budi@company.com",
+  "password": "password123",
+  "position": "Staff",
+  "phone": "08123456789",
+  "role": "staff"
+}
+```
+
+### 8. Admin - Get All Employees
+`GET /admin/employees`
+
+### 9. Admin - Get Attendance
+`GET /admin/attendance?employee=1&start=2025-09-01&end=2025-09-15`
+
+### 10. Admin - Get Notifications
+`GET /admin/notifications`
+
+## Real-time Notification
+- Notifikasi dikirim ke device admin via FCM setiap kali ada perubahan data penting (misal: update profile, clock-in).
+- Notifikasi juga disimpan di tabel Notification dan bisa diambil via endpoint.
+
+## Audit Log
+- Semua perubahan data penting dikirim ke RabbitMQ dan diinsert ke tabel Log.
+- Log dapat digunakan untuk audit dan monitoring aktivitas karyawan.
+
 ## Description
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
